@@ -130,7 +130,7 @@ img.add_border {
                             <li><a href="./../blog/index.html">blog</a></li>
                         </ul>
                       </li>
-                     <li><a href='About.html'>About</a><li class='has-children'><a href='HW.html'>HW</a><ul class='dropdown'><li class='has-children'><a href='w11.html'>w11</a><ul class='dropdown'><li><a href='Hw1.html'>Hw1</a></li></ul><li class='has-children'><a href='W6.html'>W6</a><ul class='dropdown'><li><a href='hw1-1.html'>hw1-1</a></li></ul><li class='has-children'><a href='w10.html'>w10</a><ul class='dropdown'><li><a href='hw2.html'>hw2</a></li></ul><li class='has-children'><a href='w13.html'>w13</a><ul class='dropdown'><li><a href='hw1-2.html'>hw1-2</a></li></ul><li class='has-children'><a href='W12.html'>W12</a><ul class='dropdown'><li><a href='hw1-3.html'>hw1-3</a></li></li></ul></ul><li><a href='Brython.html'>Brython</a></li>
+                     <li><a href='About.html'>About</a><li class='has-children'><a href='HW.html'>HW</a><ul class='dropdown'><li class='has-children'><a href='w11.html'>w11</a><ul class='dropdown'><li><a href='hw1-1.html'>hw1-1</a></li></ul><li class='has-children'><a href='W6.html'>W6</a><ul class='dropdown'><li><a href='hw1-2.html'>hw1-2</a></li></ul><li class='has-children'><a href='w10.html'>w10</a><ul class='dropdown'><li><a href='hw2.html'>hw2</a></li></ul><li class='has-children'><a href='w13.html'>w13</a><ul class='dropdown'><li><a href='hw1-3.html'>hw1-3</a></li></ul><li class='has-children'><a href='W12.html'>W12</a><ul class='dropdown'><li><a href='hw1-4.html'>hw1-4</a></li></li></ul></ul><li><a href='Brython.html'>Brython</a></li>
                       </ul>
                 </nav>
               </div>
@@ -141,34 +141,51 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">W6 << <a href='W6.html'>Previous</a> <a href='w10.html'>Next</a> >> w10<br /><h1>hw1-1</h1>
-<p><a href="https://mdecp2022.github.io/site-41123126/content/Brython.html?src=https://gist.githubusercontent.com/41123126/32c2ae3e3568d7b403c561fee2b5a93e/raw/a928bf6431903d6dd7066b3d5d2ccbf12260e033/%25E7%258F%25AD%25E7%25B4%259A">ewp</a></p>
-<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from browser import document, html
+    <div id="tipue_search_content">w11 << <a href='w11.html'>Previous</a> <a href='W6.html'>Next</a> >> W6<br /><h1>hw1-1</h1>
+<p><a href="https://mdecp2022.github.io/site-41123126/content/Brython.html?src=https://gist.githubusercontent.com/41123126/d60d7dfa4289da8bdcefb9e323077189/raw/9dbab4cb4852461946da643d81fc22da419b0d48/%25E7%25BC%25BA%25E8%2580%2583%25E5%2590%258D%25E5%2596%25AE">缺考名單</a></p>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">import ast
 
-brython_div1 = document["brython_div1"]
-"""
-brython_div1 &lt;= html.BUTTON("hello")
-brython_div1 &lt;= html.BR()
-brython_div1 &lt;= html.A("google", href="https://google.com")
-"""
+# get stud_list first
 
-url = "https://mde.tw/studlist/2022fall/1a.txt"
-data = open(url).read().split("\n")
-mdecp2022 = "https://mdecp2022.github.io/site-"
-data = data[1:-1]
-for i in data:
-    stud = i.split("\t")
-    stud_num = stud[0]
-    github_acc = stud[1]
-    #print(stud_num, github_acc)
-    if github_acc == "":
-        github_acc = stud_num
-    site = mdecp2022 + github_acc
-    link = html.A(stud_num, href=site)
-    brython_div1 &lt;= link
-    brython_div1 &lt;= html.BR()</pre>
-<p></p>
-<br />W6 << <a href='W6.html'>Previous</a> <a href='w10.html'>Next</a> >> w10</div>
+def get_stud(c_name):
+    courses = {"1a": "0747", "1b": "0761", "2a": "0773", "2b": "0786"}
+    c = courses[c_name]
+    url = "https://nfu.cycu.org/?semester=1111&amp;courseno=" + c + "&amp;column=True"
+    data = open(url).read().split("\n")
+    stud = data[:-1]
+    return stud
+    
+cp_stud = get_stud("1a")
+
+# get w10 quiz result
+cp_w10_quiz_url = "https://gist.githubusercontent.com/mdecycu/9df4b372ac1b7386cf259ced15f1a2b2/raw/9e8bf693a2805631aa12992db4d4f23e0f64e868/2022_1112_cp1a_w10_quiz.json"
+
+def get_score(url):
+    json_data = open(url).read()
+    big_dict = ast.literal_eval(json_data)
+    data = big_dict["body"]["testuser"]
+    quiz_dict = {}
+    for i in data:
+        stud_id = data[i]["user_name"]
+        stud_score = int(float(data[i]["total_score"]))
+        quiz_dict[stud_id] = stud_score
+    return quiz_dict
+    
+cp_quiz = get_score(cp_w10_quiz_url)
+cp_abs = []
+for stud in cp_stud:
+    try:
+        print(stud, cp_quiz[stud])
+    except:
+        # 缺考者沒有 quiz 成績
+        print(stud, "缺")
+        cp_abs.append(stud)
+# 列出缺考名單
+print("="*20)
+print("以下為 w10 缺考名單:")
+for stud in cp_abs:
+    print(stud)</pre>
+<p></p><br />w11 << <a href='w11.html'>Previous</a> <a href='W6.html'>Next</a> >> W6</div>
         
     <!-- footer -->
       <div class="container">
