@@ -142,7 +142,51 @@ img.add_border {
           
         </header>
     <div id="tipue_search_content">W6 << <a href='W6.html'>Previous</a> <a href='hw1-2.html'>Next</a> >> hw1-2<br /><h1>hw2-1</h1>
-<p><a href="https://mdecp2022.github.io/site-41123126/content/Brython.html?src=https://gist.githubusercontent.com/41123126/b3c113b1d4e054e607f56f82f9419a41/raw/d124d68517570d27e22a78e993ac2329e2e2aeea/%25E6%258A%25BD%25E9%25BB%259E">抽點</a></p><br />W6 << <a href='W6.html'>Previous</a> <a href='hw1-2.html'>Next</a> >> hw1-2</div>
+<p><a href="https://mdecp2022.github.io/site-41123126/content/Brython.html?src=https://gist.githubusercontent.com/41123126/b3c113b1d4e054e607f56f82f9419a41/raw/d124d68517570d27e22a78e993ac2329e2e2aeea/%25E6%258A%25BD%25E9%25BB%259E">抽點</a></p>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from browser import document, html
+# 使用 import 導入 random 模組, 隨後就可以直接引用 random 模組的方法
+import random
+brython_div1 = document["brython_div1"]
+# Python 的註解分為單行註解與多行, 單行註解可在字串前方放入 #
+"""
+brython_div1 &lt;= html.BUTTON("hello")
+brython_div1 &lt;= html.BR()
+brython_div1 &lt;= html.A("google", href="https://google.com")
+"""
+ 
+# 宣告 url 變數值為字串, 此字串為取得 cp2022 1a 選課成員名單
+url = "https://mde.tw/studlist/2022fall/1a.txt"
+# 利用上述已經宣告的 url 變數字串值, 作為 open() 函式的輸入變數, 可以連結至該網站
+# 連接 url 所代表字串的網站後, 再利用 read() 函式讀取該網站的內容, 即可取得 cp2022 1a 的選課成員學號
+# 由於所取回的學號以跳行符號隔開, 因此取回的學號資料行, 再利用 split() 函式, 以 \n 跳行符號分割後
+# 所對應到 data 的資料型別將會是數列
+data = open(url).read().split("\n")
+# 宣告 mdecp2022 變數值為字串, 此字串為方便之後撰寫
+mdecp2022 = "https://mdecp2022.github.io/site-"
+# 宣告 data 為 data 的第二項到倒數第二項
+data = data[1:-1]
+ 
+# 使用 random 模組裡的 shuffle 將data裡的元素打亂
+random.shuffle(data)
+# 使用重複迴圈在 data 裡取前五個(0,1,2,3,4)
+for i in data[:5]:
+    # 宣告 stud 變數為切割掉空格的i
+    stud = i.split("\t")
+    # 宣告 stud_num 為 stud 的第一項
+    stud_num = stud[0]
+    # 宣告 github_acc 為 stud 的第二項
+    github_acc = stud[1]
+    #print(stud_num, github_acc)
+    # 如果 github_acc 沒有取到
+    if github_acc == "":
+        # github_acc 就會是 stud_num
+        github_acc = stud_num
+    # site (網站)= mdecp2022 變數 + github_acc 變數
+    site = mdecp2022 + github_acc
+    link = html.A(stud_num, href=site)
+    brython_div1 &lt;= link
+    brython_div1 &lt;= html.BR()</pre>
+<p></p><br />W6 << <a href='W6.html'>Previous</a> <a href='hw1-2.html'>Next</a> >> hw1-2</div>
         
     <!-- footer -->
       <div class="container">
